@@ -53,7 +53,7 @@ class AutoEnvironment(Environment):
             environment = environment(self.env)
             executable = environment.args()[0]
             if find_executable(executable):
-                print "Using {0} for require.js optimization".format(environment.__class__.__name__)
+                print "Auto environment using {0} for require.js optimization".format(environment.__class__.__name__)
                 return environment
 
         raise EnvironmentError("no environments detected: {envs}".format(
