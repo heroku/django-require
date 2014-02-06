@@ -27,7 +27,7 @@ class Environment(object):
 class NodeEnvironment(Environment):
     def args(self):
         # Start of the command to run the compiler in Node.
-        return ["node"]
+        return ["/app/vendor/node/bin/node"]
 
 
 class RhinoEnvironment(Environment):
