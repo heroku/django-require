@@ -40,5 +40,9 @@ class LazySettings(object):
             'node': 'require.environments.NodeEnvironment',
             'rhino': 'require.environments.RhinoEnvironment',
             })
-    
+
+    @property
+    def REQUIRE_FIXUP_MODULE_NAMES(self):
+        return getattr(django_settings, "REQUIRE_FIXUP_MODULE_NAMES", [])
+
 settings = LazySettings()

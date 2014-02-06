@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import tempfile, shutil, os.path, hashlib, subprocess
 from functools import partial
 from contextlib import closing
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import File
@@ -78,6 +79,7 @@ class OptimizedFilesMixin(object):
         # Compile in a temporary environment.
         with TemporaryCompileEnvironment(verbosity=verbosity) as env:
             exclude_names = list(require_settings.REQUIRE_EXCLUDE)
+            fixup_modules = list(require_settings.REQUIRE_FIXUP_MODULE_NAMES)
             compile_info = {}
             # Copy all assets into the compile dir.
             for name, storage_details in paths.items():
@@ -147,6 +149,21 @@ class OptimizedFilesMixin(object):
                             del paths[build_storage_name]
                             self.delete(build_storage_name)
                         continue
+
+                    # fixup explicitly declared modules to remove their module name
+                    fixup = next((module for module in fixup_modules if build_storage_name.endswith(module + '.js')), None)
+                    if fixup:
+                        print "  Removing module name from define declaration for: " + build_storage_name
+                        # read thefile
+                        with File(open(build_filepath, "rb"), build_storage_name) as build_handle:
+                            contents = build_handle.read()
+
+                        contents = re.sub(r'define\([\'"]{0}[\'"],'.format(fixup), 'define(', contents)
+
+                        # re-write the file
+                        with File(open(build_filepath, "wb"), build_storage_name) as build_handle:
+                            build_handle.write(contents)
+
                     # Update the asset.
                     with File(open(build_filepath, "rb"), build_storage_name) as build_handle:
                         # Calculate asset hash.
