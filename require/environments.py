@@ -27,7 +27,8 @@ class Environment(object):
 class NodeEnvironment(Environment):
     def args(self):
         # Start of the command to run the compiler in Node.
-        return ["node"] if require_settings.REQUIRE_DEBUG else ["/app/vendor/node/bin/node"]
+        #return ["node"] if require_settings.REQUIRE_DEBUG else ["/app/vendor/node/bin/node"]
+        return ["node"]
 
 
 class RhinoEnvironment(Environment):
